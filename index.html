@@ -127,28 +127,33 @@
     let map;
   
     function initializeMap(latitude, longitude) {
-      if (map) {
-        map.setView([latitude, longitude], 15);
-        return;
-      }
-  
-      map = L.map("map").setView([latitude, longitude], 15);
-  
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution:
-          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      }).addTo(map);
-  
-      L.marker([latitude, longitude])
-        .addTo(map)
-        .bindPopup(
-          "Location: <br>Latitude: " +
-            latitude +
-            "<br>Longitude: " +
-            longitude
-        )
-        .openPopup();
-    }
+  if (map) {
+    map.setView([latitude, longitude], 15);
+    return;
+  }
+
+  map = L.map("map").setView([latitude, longitude], 15);
+
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution:
+      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  }).addTo(map);
+
+  const popupContent = `
+    Location: <br>
+    Latitude: ${latitude} <br>
+    Longitude: ${longitude} <br>
+    <a href="https://www.google.com/maps?q=${latitude},${longitude}" target="_blank" rel="noopener noreferrer">
+      Open in Google Maps
+    </a>
+  `;
+
+  L.marker([latitude, longitude])
+    .addTo(map)
+    .bindPopup(popupContent)
+    .openPopup();
+}
+
   
     function updateData(data) {
       const latitude = parseFloat(data?.latitude) || defaultLatitude;
