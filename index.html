@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Smart Helmet</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+ 
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+ 
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    rel="stylesheet"
+  />
+  <style>
+    #map {
+      height: 210px; 
+      width: 100%;
+      transition: all 0.3s ease; 
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #8f9091;">
+    <a class="navbar-brand" href="#">
+      <img
+        src="/helmet.png"
+        alt="Logo"
+        width="150"
+        height="50"
+        class="d-inline-block align-text-top"
+      />
+    </a>
+  </nav>
+
+  <div class="container mt-3">
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <div class="form-group">
+          <label for="dateInput">
+            <i class="fa fa-calendar" aria-hidden="true"></i> Date
+          </label>
+          <input
+            type="text"
+            class="form-control"
+            id="dateInput"
+            readonly
+          />
+        </div>
+        <div class="form-group">
+          <label for="timeInput">
+            <i class="fa fa-clock" aria-hidden="true"></i> Time
+          </label>
+          <input
+            type="text"
+            class="form-control"
+            id="timeInput"
+            readonly
+          />
+        </div>
+        <div class="form-group">
+          <label for="batteryInput">
+            <i class="fa fa-battery-half" aria-hidden="true"></i> Battery Voltage
+          </label>
+          <input
+            type="text"
+            class="form-control"
+            id="batteryInput"
+            readonly
+          />
+        </div>
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="map">
+          <i class="fa fa-map-marker" aria-hidden="true"></i> Location
+        </label>
+        <div id="map" class="mb-4">
+        </div>
+      </div>
+    </div>
+
+    <button id="fetchAllData" class="btn btn-secondary">Refresh</button>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAEZ0ab61TCzQo6PraK6xGMvIvcg4bxqvQ",
+      authDomain: "smart-helmet-18fcf.firebaseapp.com",
+      databaseURL: "https://smart-helmet-18fcf-default-rtdb.asia-southeast1.firebasedatabase.app/",
+      projectId: "smart-helmet-18fcf",
+      storageBucket: "smart-helmet-18fcf.appspot.com",
+      messagingSenderId: "572517937653",
+      appId: "7fpg6I9Ho2PTAvZvKgJ3iyR2N854iakXpgzHcYxB",
+    };
+  
+    firebase.initializeApp(firebaseConfig);
+  
+    const database = firebase.database();
+  
+    const defaultLatitude = 7.46586;
+    const defaultLongitude = 80.01763;
+  
+    let map;
+  
+    function initializeMap(latitude, longitude) {
+      if (map) {
+        map.setView([latitude, longitude], 15);
+        return;
+      }
+  
+      map = L.map("map").setView([latitude, longitude], 15);
+  
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      }).addTo(map);
+  
+      L.marker([latitude, longitude])
+        .addTo(map)
+        .bindPopup(
+          "Location: <br>Latitude: " +
+            latitude +
+            "<br>Longitude: " +
+            longitude
+        )
+        .openPopup();
+    }
+  
+    function updateData(data) {
+      const latitude = parseFloat(data?.latitude) || defaultLatitude;
+      const longitude = parseFloat(data?.longitude) || defaultLongitude;
+      const timestamp = data?.timestamp || "";
+  
+      initializeMap(latitude, longitude);
+  
+      document.getElementById("dateInput").value = new Date(timestamp).toLocaleDateString();
+      document.getElementById("timeInput").value = new Date(timestamp).toLocaleTimeString();
+      document.getElementById("batteryInput").value = data?.batteryVoltage || "N/A";
+    }
+  
+    function handleError(error) {
+      console.error("Error fetching data from Firebase:", error);
+      initializeMap(defaultLatitude, defaultLongitude);
+  
+      document.getElementById("dateInput").value = "";
+      document.getElementById("timeInput").value = "";
+      document.getElementById("batteryInput").value = "N/A";
+    }
+  
+    function fetchLocation() {
+      database
+        .ref("location")
+        .once("value")
+        .then((snapshot) => {
+          const data = snapshot.val();
+          updateData(data);
+        })
+        .catch(handleError);
+    }
+  
+    function fetchAllData() {
+      fetchLocation();
+    }
+  
+    document
+      .getElementById("fetchAllData")
+      .addEventListener("click", fetchAllData);
+  
+    // Listen for changes in the Firebase database
+    let lastUpdate = 0;
+    const debounceInterval = 5000; // 5 seconds
+  
+    database.ref("location").on("value", (snapshot) => {
+      const currentTime = Date.now();
+      if (currentTime - lastUpdate >= debounceInterval) {
+        lastUpdate = currentTime;
+        const data = snapshot.val();
+        updateData(data);
+      }
+    });
+  
+    fetchAllData();
+  </script>
+  
+  
+  
+</body>
+</html>
