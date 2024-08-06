@@ -19,6 +19,9 @@
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
     rel="stylesheet"
   />
+
+  <link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet">
+  
   <style>
     #map {
       height: 210px; 
@@ -26,17 +29,24 @@
       transition: all 0.3s ease; 
     }
   </style>
+   <style>
+    .navbar {
+        background-color: #8f9091;
+    }
+    .navbar-brand {
+            font-family: 'Russo One', sans-serif; /* Apply Russo One font */
+            font-size: 1.5rem; /* Adjust font size as needed */
+            text-align: center;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+</style>
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #8f9091;">
     <a class="navbar-brand" href="#">
-      <img
-        src="/helmet.png"
-        alt="Logo"
-        width="150"
-        height="50"
-        class="d-inline-block align-text-top"
-      />
+     SMART HELMET
     </a>
   </nav>
 
@@ -86,7 +96,6 @@
       </div>
     </div>
 
-    <button id="fetchAllData" class="btn btn-secondary">Refresh</button>
   </div>
 
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -176,13 +185,8 @@
       fetchLocation();
     }
   
-    document
-      .getElementById("fetchAllData")
-      .addEventListener("click", fetchAllData);
-  
-    // Listen for changes in the Firebase database
     let lastUpdate = 0;
-    const debounceInterval = 5000; // 5 seconds
+    const debounceInterval = 5000; 
   
     database.ref("location").on("value", (snapshot) => {
       const currentTime = Date.now();
