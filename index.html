@@ -128,36 +128,36 @@
       let map;
 
       function initializeMap(latitude, longitude) {
-        if (map) {
-          map.setView([latitude, longitude], 15);
-          return;
-        }
+    if (map) {
+        map.setView([latitude, longitude], 15);
+        return;
+    }
 
-        map = L.map("map").setView([latitude, longitude], 15);
+    map = L.map("map").setView([latitude, longitude], 15);
 
-        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-          attribution:
-            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        }).addTo(map);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(map);
 
-        const googleMapsUrl = `https://www.google.com/maps?q=${latitude},${longitude}`;
+    const googleMapsUrl = `https://www.google.com/maps?q=${latitude},${longitude}`;
 
-        const popupContent = `
-    <div>
-      <p>Location:</p>
-      <p>Latitude: ${latitude}</p>
-      <p>Longitude: ${longitude}</p>
-      <button class="btn-primary" href="${googleMapsUrl}" >
-        Open in Google Maps
-      </button>
-    </div>
-  `;
+    const popupContent = `
+        <div>
+            <p>Location:</p>
+            <p>Latitude: ${latitude}</p>
+            <p>Longitude: ${longitude}</p>
+            <a class="btn btn-primary" href="${googleMapsUrl}" target="_blank">
+                Open in Google Maps
+            </a>
+        </div>
+    `;
 
-        L.marker([latitude, longitude])
-          .addTo(map)
-          .bindPopup(popupContent)
-          .openPopup();
-      }
+    L.marker([latitude, longitude])
+        .addTo(map)
+        .bindPopup(popupContent)
+        .openPopup();
+}
+
 
       function updateData(data) {
         const latitude = parseFloat(data?.latitude) || defaultLatitude;
