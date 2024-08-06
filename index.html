@@ -59,8 +59,12 @@
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark">
-      <a class="navbar-brand" href="#"> SMART HELMET </a>
+      <a class="navbar-brand" href="#">
+        <img src="/helmet.png" style="height: 40px; width: auto;">
+        
+      </a>
     </nav>
+    
 
     <div class="container mt-3">
       <div class="row">
@@ -144,9 +148,9 @@
       <p>Location:</p>
       <p>Latitude: ${latitude}</p>
       <p>Longitude: ${longitude}</p>
-      <a href="${googleMapsUrl}" >
+      <button class="btn-primary" href="${googleMapsUrl}" >
         Open in Google Maps
-      </a>
+      </button>
     </div>
   `;
 
