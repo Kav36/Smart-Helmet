@@ -168,8 +168,9 @@
       initializeMap(latitude, longitude);
   
       document.getElementById("dateInput").textContent = new Date(timestamp).toLocaleDateString();
-      document.getElementById("timeInput").textContent = new Date(timestamp).toLocaleTimeString();
-      document.getElementById("batteryInput").textContent = data?.battery + "V" || "N/A";
+      document.getElementById("timeInput").textContent = new Date(timestamp).toUTCString().split(' ')[4] + " H";
+
+      document.getElementById("batteryInput").textContent = data?.battery + " V" || "N/A";
     }
   
     function handleError(error) {
