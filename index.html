@@ -1,218 +1,211 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Smart Helmet</title>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <head>
+    <title>Smart Helmet</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <link
-    href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-    rel="stylesheet"
-  />
- 
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-  />
- 
-  <link
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
-    rel="stylesheet"
-  />
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
 
-  <link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet">
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
 
-  <style>
-    #map {
-      height: 500px; 
-      width: 100%;
-      transition: all 0.3s ease; 
-    }
-    .navbar {
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+      rel="stylesheet"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      #map {
+        height: 500px;
+        width: 100%;
+        transition: all 0.3s ease;
+      }
+      .navbar {
         background-color: #8f9091;
-    }
-    .navbar-brand {
-        font-family: 'Russo One', sans-serif; 
-        font-size: 1.5rem; 
+      }
+      .navbar-brand {
+        font-family: "Russo One", sans-serif;
+        font-size: 1.5rem;
         text-align: center;
         width: 100%;
         display: flex;
         justify-content: center;
-    }
-    .label-value-container {
-      display: flex;
-      align-items: center;
-    }
-    .label-value-container label {
-      margin-right: 20px; 
-    }
-    .label-value-container p {
-      margin: 0; 
-    }
-    .bold-label {
-  font-weight: bold;
-}
-  </style>
-</head>
-<body>
-  <nav class="navbar navbar-expand-lg navbar-dark">
-    <a class="navbar-brand" href="#">
-     SMART HELMET
-    </a>
-  </nav>
+      }
+      .label-value-container {
+        display: flex;
+        align-items: center;
+      }
+      .label-value-container label {
+        margin-right: 20px;
+      }
+      .label-value-container p {
+        margin: 0;
+      }
+      .bold-label {
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+      <a class="navbar-brand" href="#"> SMART HELMET </a>
+    </nav>
 
-  <div class="container mt-3">
-    <div class="row">
-      <div class="col-md-6 mb-3">
-        <div class="form-group">
-          <div class="label-value-container">
-            <label for="dateInput"  class="mb-0 bold-label">
-              <i class="fa fa-clock" aria-hidden="true"></i> Last 
-              updated:
-            </label>
-            <p id="dateInput" class="mb-0">
-            </p>
+    <div class="container mt-3">
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <div class="form-group">
+            <div class="label-value-container">
+              <label for="dateInput" class="mb-0 bold-label">
+                <i class="fa fa-clock" aria-hidden="true"></i> Last updated:
+              </label>
+              <p id="dateInput" class="mb-0"></p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 mb-3">
+          <div class="form-group">
+            <div class="label-value-container">
+              <label for="batteryInput" class="mb-0 bold-label">
+                <i class="fa fa-battery-half" aria-hidden="true"></i> Battery
+                Voltage:
+              </label>
+              <p id="batteryInput" class="mb-0"></p>
+            </div>
           </div>
         </div>
       </div>
-      <div class="col-md-6 mb-3">
-        <div class="form-group">
-          <div class="label-value-container">
-            <label for="batteryInput"  class="mb-0 bold-label">
-              <i class="fa fa-battery-half" aria-hidden="true"></i> Battery Voltage:
-            </label>
-            <p id="batteryInput" class="mb-0">
-            </p>
-          </div>
+      <div class="row">
+        <div class="col">
+          <label for="map" class="bold-label">
+            <i class="fa fa-map-marker" aria-hidden="true"></i> Location:
+          </label>
+          <div id="map" class="mb-4"></div>
         </div>
       </div>
     </div>
-    <div class="row">
-      <div class="col">
-        <label for="map"  class="bold-label">
-          <i class="fa fa-map-marker" aria-hidden="true"></i> Location:
-        </label>
-        <div id="map" class="mb-4">
-        </div>
-      </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyAEZ0ab61TCzQo6PraK6xGMvIvcg4bxqvQ",
+        authDomain: "smart-helmet-18fcf.firebaseapp.com",
+        databaseURL:
+          "https://smart-helmet-18fcf-default-rtdb.asia-southeast1.firebasedatabase.app/",
+        projectId: "smart-helmet-18fcf",
+        storageBucket: "smart-helmet-18fcf.appspot.com",
+        messagingSenderId: "572517937653",
+        appId: "7fpg6I9Ho2PTAvZvKgJ3iyR2N854iakXpgzHcYxB",
+      };
+
+      firebase.initializeApp(firebaseConfig);
+
+      const database = firebase.database();
+
+      const defaultLatitude = 7.46586;
+      const defaultLongitude = 80.01763;
+
+      let map;
+
+      function initializeMap(latitude, longitude) {
+        if (map) {
+          map.setView([latitude, longitude], 15);
+          return;
+        }
+
+        map = L.map("map").setView([latitude, longitude], 15);
+
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          attribution:
+            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        }).addTo(map);
+
+        const googleMapsUrl = `https://www.google.com/maps?q=${latitude},${longitude}`;
+
+        const popupContent = `
+    <div>
+      <p>Location:</p>
+      <p>Latitude: ${latitude}</p>
+      <p>Longitude: ${longitude}</p>
+      <a href="${googleMapsUrl}" >
+        Open in Google Maps
+      </a>
     </div>
-  </div>
-
-
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyAEZ0ab61TCzQo6PraK6xGMvIvcg4bxqvQ",
-      authDomain: "smart-helmet-18fcf.firebaseapp.com",
-      databaseURL: "https://smart-helmet-18fcf-default-rtdb.asia-southeast1.firebasedatabase.app/",
-      projectId: "smart-helmet-18fcf",
-      storageBucket: "smart-helmet-18fcf.appspot.com",
-      messagingSenderId: "572517937653",
-      appId: "7fpg6I9Ho2PTAvZvKgJ3iyR2N854iakXpgzHcYxB",
-    };
-  
-    firebase.initializeApp(firebaseConfig);
-  
-    const database = firebase.database();
-  
-    const defaultLatitude = 7.46586;
-    const defaultLongitude = 80.01763;
-  
-    let map;
-  
-    function initializeMap(latitude, longitude) {
-  if (map) {
-    map.setView([latitude, longitude], 15);
-    return;
-  }
-
-  map = L.map("map").setView([latitude, longitude], 15);
-
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution:
-      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-  }).addTo(map);
-
-  const googleMapsUrl = `https://www.google.com/maps?q=${latitude},${longitude}`;
-  
-  const popupContent = `
-    Location: <br>
-    Latitude: ${latitude} <br>
-    Longitude: ${longitude}
   `;
 
-  const marker = L.marker([latitude, longitude])
-    .addTo(map)
-    .bindPopup(popupContent)
-    .openPopup();
+        L.marker([latitude, longitude])
+          .addTo(map)
+          .bindPopup(popupContent)
+          .openPopup();
+      }
 
-  // Open Google Maps when the popup is clicked
-  marker.on('popupopen', function() {
-    const popup = marker.getPopup();
-    const container = popup.getElement();
-    container.addEventListener('click', function() {
-      window.open(googleMapsUrl, '_blank', 'noopener,noreferrer');
-    });
-  });
-}
+      function updateData(data) {
+        const latitude = parseFloat(data?.latitude) || defaultLatitude;
+        const longitude = parseFloat(data?.longitude) || defaultLongitude;
+        const timestamp = data?.timestamp || "";
 
+        initializeMap(latitude, longitude);
 
-  
-    function updateData(data) {
-      const latitude = parseFloat(data?.latitude) || defaultLatitude;
-      const longitude = parseFloat(data?.longitude) || defaultLongitude;
-      const timestamp = data?.timestamp || "";
-  
-      initializeMap(latitude, longitude);
-  
-      document.getElementById("dateInput").textContent = timestamp;
+        document.getElementById("dateInput").textContent = timestamp;
 
-      document.getElementById("batteryInput").textContent = data?.battery + " V" || "N/A";
-    }
-  
-    function handleError(error) {
-      console.error("Error fetching data from Firebase:", error);
-      initializeMap(defaultLatitude, defaultLongitude);
-  
-      document.getElementById("dateInput").textContent = "";
-      document.getElementById("timeInput").textContent = "";
-      document.getElementById("batteryInput").textContent = "N/A";
-    }
-  
-    function fetchLocation() {
-      database
-        .ref("location")
-        .once("value")
-        .then((snapshot) => {
+        document.getElementById("batteryInput").textContent =
+          data?.battery + " V" || "N/A";
+      }
+
+      function handleError(error) {
+        console.error("Error fetching data from Firebase:", error);
+        initializeMap(defaultLatitude, defaultLongitude);
+
+        document.getElementById("dateInput").textContent = "";
+        document.getElementById("timeInput").textContent = "";
+        document.getElementById("batteryInput").textContent = "N/A";
+      }
+
+      function fetchLocation() {
+        database
+          .ref("location")
+          .once("value")
+          .then((snapshot) => {
+            const data = snapshot.val();
+            updateData(data);
+          })
+          .catch(handleError);
+      }
+
+      function fetchAllData() {
+        fetchLocation();
+      }
+
+      let lastUpdate = 0;
+      const debounceInterval = 5000;
+
+      database.ref("location").on("value", (snapshot) => {
+        const currentTime = Date.now();
+        if (currentTime - lastUpdate >= debounceInterval) {
+          lastUpdate = currentTime;
           const data = snapshot.val();
           updateData(data);
-        })
-        .catch(handleError);
-    }
-  
-    function fetchAllData() {
-      fetchLocation();
-    }
-  
-    let lastUpdate = 0;
-    const debounceInterval = 5000; 
-  
-    database.ref("location").on("value", (snapshot) => {
-      const currentTime = Date.now();
-      if (currentTime - lastUpdate >= debounceInterval) {
-        lastUpdate = currentTime;
-        const data = snapshot.val();
-        updateData(data);
-      }
-    });
-  
-    fetchAllData();
-  </script>
-</body>
+        }
+      });
+
+      fetchAllData();
+    </script>
+  </body>
 </html>
