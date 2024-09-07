@@ -67,7 +67,7 @@
 
     <div class="container mt-3">
       <div class="row">
-        <div class="col-md-6 mb-3">
+        <div class="col-md-4 mb-3">
           <div class="form-group">
             <div class="label-value-container">
               <label for="dateInput" class="mb-0 bold-label">
@@ -77,7 +77,7 @@
             </div>
           </div>
         </div>
-        <div class="col-md-6 mb-3">
+        <div class="col-md-4 mb-3">
           <div class="form-group">
             <div class="label-value-container">
               <label for="batteryInput" class="mb-0 bold-label">
@@ -85,6 +85,16 @@
                 Voltage:
               </label>
               <p id="batteryInput" class="mb-0"></p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="form-group">
+            <div class="label-value-container">
+              <label for="speedInput" class="mb-0 bold-label">
+                <i class="fa fa fa-motorcycle" aria-hidden="true"></i> Speed:
+              </label>
+              <p id="speedInput" class="mb-0"></p>
             </div>
           </div>
         </div>
@@ -170,6 +180,8 @@
 
         document.getElementById("batteryInput").textContent =
           data?.battery + " V" || "N/A";
+        document.getElementById("speedInput").textContent =
+          data?.speed + " km/h" || "N/A";  
       }
 
       function handleError(error) {
@@ -179,6 +191,7 @@
         document.getElementById("dateInput").textContent = "";
         document.getElementById("timeInput").textContent = "";
         document.getElementById("batteryInput").textContent = "N/A";
+        document.getElementById("speedInput").textContent = "";
       }
 
       function fetchLocation() {
